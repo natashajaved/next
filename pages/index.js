@@ -87,7 +87,7 @@ export async function getServerSideProps(context) {
 
 
   const isServer = !!context.req
-  const clientIP = context.req ? context.req.clientIp : null
+  const clientIP = context.req ? context.req.clientIp : ''
   console.log({
     isServer,
     clientIP
@@ -108,7 +108,7 @@ export async function getServerSideProps(context) {
 
   //const position = await navigator.geolocation.getCurrentPosition((pos)=>{return pos},()=>{return{}})
 
-  let loc = await axiousIns.post(`http://api.accuweather.com/locations/v1/cities/ipaddress?apikey=ekhA5PxPCm3KgNImGcXtjUJqRd4Rt3Cb`)
+  let loc = await axiousIns.post(`http://api.accuweather.com/locations/v1/cities/ipaddress?q=${clientIP}&apikey=ekhA5PxPCm3KgNImGcXtjUJqRd4Rt3Cb`)
   const { GeoPosition: { Latitude = '', Longitude = '' } = {} } = loc.data
 
   let res = await axiousIns
