@@ -87,7 +87,7 @@ export async function getServerSideProps(context) {
 
 
   const isServer = !!context.req
-  const clientIP = context.req ? context.req.clientIp : ''
+  const clientIP = context.req ? context.req.clientIp !== '::1' ? context.req.clientIp : '127.0.0.1':'127.0.0.1'
   console.log({
     isServer,
     clientIP
@@ -107,9 +107,14 @@ export async function getServerSideProps(context) {
   // return { stars: json.stargazers_count }
 
   //const position = await navigator.geolocation.getCurrentPosition((pos)=>{return pos},()=>{return{}})
-
+  let Latitude = '31.5204'
+  let Longitude = '74.3587'
   let loc = await axiousIns.post(`http://api.accuweather.com/locations/v1/cities/ipaddress?q=${clientIP}&apikey=ekhA5PxPCm3KgNImGcXtjUJqRd4Rt3Cb`)
-  const { GeoPosition: { Latitude = '', Longitude = '' } = {} } = loc.data
+  if (loc?.data) {
+    const geo = loc.data.GeoPosition
+    Latitude = geo.Latitude
+    Longitude = geo.Longitude
+  }
 
   let res = await axiousIns
     .post(
@@ -126,7 +131,7 @@ export async function getServerSideProps(context) {
       prayers: res.data,
       gmt: res.data.TimeZone.GmtOffset,
       loc: loc.data,
-      clientIP:clientIP? clientIP :'none found',
+      clientIP: clientIP ? clientIP : 'none found',
       allc,
       stars: PrayTimes().getTimes(
         moment().toDate(),
