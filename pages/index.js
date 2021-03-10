@@ -87,10 +87,13 @@ export async function getServerSideProps(context) {
 
 
   const isServer = !!context.req
-  const clientIP = context.req ? context.req.clientIp !== '::1' ? context.req.clientIp : '127.0.0.1':'127.0.0.1'
+  const clientIP = context.req  && context.req.clientIp ? context.req.clientIp !== '::1' ? context.req.clientIp : '127.0.0.1':'127.0.0.1'
   console.log({
     isServer,
-    clientIP
+    actualip:context.req.clientIp,
+    clientIP,
+    c:context.req.connection.remoteAddres,
+    d:'as'
   })
 
   const axiousIns = axios.create()
