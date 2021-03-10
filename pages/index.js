@@ -82,18 +82,18 @@ const index = (props) => {
 index.getLayout = (page) => { return <div>{page}</div> };
 
 
-export async function getServerSideProps(context) {
+index.getInitialProps =async (context) => {
   console.log({ context })
 
 
   const isServer = !!context.req
-  const clientIP = context.req  && context.req.clientIp ? context.req.clientIp !== '::1' ? context.req.clientIp : '127.0.0.1':'127.0.0.1'
+  const clientIP = context.req && context.req.clientIp ? context.req.clientIp !== '::1' ? context.req.clientIp : '127.0.0.1' : '127.0.0.1'
   console.log({
     isServer,
-    actualip:context.req.clientIp,
+    actualip: context.req.clientIp,
     clientIP,
-    c:context.req.connection.remoteAddres,
-    d:'as'
+    c: context.req,
+    d: 'as'
   })
 
   const axiousIns = axios.create()
