@@ -126,6 +126,7 @@ export async function getServerSideProps(context) {
       prayers: res.data,
       gmt: res.data.TimeZone.GmtOffset,
       loc: loc.data,
+      clientIP,
       allc,
       stars: PrayTimes().getTimes(
         moment().toDate(),
