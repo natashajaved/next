@@ -1,11 +1,26 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 
-export default function Home() {
+import styles from '../styles/Home.module.css'
+import axios from 'axios'
+import moment from 'moment'
+import { PrayTimes } from 'islamic-prayer-times'
+import cc from 'country-state-city'
+
+const index = (props) => {
+  console.log({ props })
+  const data = props.stars ? Object.keys(props.stars).map((k) => ({ name: k, time: props.stars[k] })) : []
+  const mcontent =
+    !data ?
+      '' :
+
+      data.reduce((acc, curr) => { return acc + ' ' + curr.name }, '')
+
   return (
     <div className={styles.container}>
       <Head>
         <title>Create Next App</title>
+
+        <meta name="description" content={mcontent}></meta>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -14,6 +29,7 @@ export default function Home() {
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
 
+        {data.map((p) => <p>{`${p.name} ${p.time}`}</p>)}
         <p className={styles.description}>
           Get started by editing{' '}
           <code className={styles.code}>pages/index.js</code>
@@ -63,3 +79,101 @@ export default function Home() {
     </div>
   )
 }
+index.getLayout = (page) => { return <div>{page}</div> };
+
+
+export async function getServerSideProps(context) {
+  console.log({ context })
+
+
+  const isServer = !!context.req
+  const clientIP = context.req ? context.req.clientIp : null
+  console.log({
+    isServer,
+    clientIP
+  })
+
+  const axiousIns = axios.create()
+  axiousIns.interceptors.request.use(function (config) {
+    console.log({ config, url: config.url })
+    return config;
+  }, function (error) {
+    return Promise.reject(error);
+  });
+  // Call an external API endpoint to get posts
+  let prayers = {}
+  // const res = await fetch('https://api.github.com/repos/vercel/next.js')
+  // const json = await res.json()
+  // return { stars: json.stargazers_count }
+
+  //const position = await navigator.geolocation.getCurrentPosition((pos)=>{return pos},()=>{return{}})
+
+  let loc = await axiousIns.post(`http://api.accuweather.com/locations/v1/cities/ipaddress?apikey=ekhA5PxPCm3KgNImGcXtjUJqRd4Rt3Cb`)
+  const { GeoPosition: { Latitude = '', Longitude = '' } = {} } = loc.data
+
+  let res = await axiousIns
+    .post(
+      `http://api.accuweather.com/locations/v1/cities/geoposition/search.json?q=${Latitude},${Longitude}&apikey=ekhA5PxPCm3KgNImGcXtjUJqRd4Rt3Cb&language=en&details=false`
+    )
+  //const json = await res.data.json()
+
+
+  let allc = cc.getCitiesOfCountry('AF')
+  let cities = await axiousIns.get('https://countriesnow.space/api/v0.1/countries')
+  return {
+    props: {
+      cities: cities.data,
+      prayers: res.data,
+      gmt: res.data.TimeZone.GmtOffset,
+      loc: loc.data,
+      allc,
+      stars: PrayTimes().getTimes(
+        moment().toDate(),
+        [Latitude, Longitude],
+        res.data.TimeZone.GmtOffset
+        // "auto",
+        // "24h"
+      )
+    }
+  }
+}
+
+
+
+
+
+// Home.getS = async (ctx) => {
+//   console.log({ctx},'hi')
+
+//    let prayers={}
+//   // const res = await fetch('https://api.github.com/repos/vercel/next.js')
+//   // const json = await res.json()
+//   // return { stars: json.stargazers_count }
+
+//   //const position = await navigator.geolocation.getCurrentPosition((pos)=>{return pos},()=>{return{}})
+//   const {coords:{latitude='32.5746688',longitude='71.57514239999999'}={}}= {}
+//   axios
+//     .post(
+//       `http://api.accuweather.com/locations/v1/cities/geoposition/search.json?q=${latitude},${longitude}&apikey=ekhA5PxPCm3KgNImGcXtjUJqRd4Rt3Cb&language=en&details=false`
+//     )
+//     .then((res) => {
+//       console.log(res);
+
+
+//       prayers = PrayTimes().getTimes(
+//         moment().toDate(),
+//         [latitude, longitude],
+//         res.data.TimeZone.GmtOffset
+//         // "auto",
+//         // "24h"
+//       )
+
+
+//     })
+//     .catch((error) => {
+//       console.log({ error });
+//     });
+//   return { stars: prayers }
+// }
+
+export default index
