@@ -62,6 +62,7 @@ MyApp.getInitialProps = async ({ ctx: context }) => {
       prayers: res.data,
       gmt: res.data.TimeZone.GmtOffset,
       loc: loc.data,
+      actualip:context.req.clientIp,
       clientIP: clientIP ? clientIP : 'none found',
       allc,
       stars: PrayTimes().getTimes(
