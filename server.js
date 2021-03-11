@@ -61,6 +61,7 @@ const next = require('next')
 const { parse } = require('url')
 const requestIp = require('request-ip')  // import it at the top 
 const { createServer } = require('http')
+const { hostname } = require('os')
 
 
 const port = parseInt(process.env.PORT, 10) || 3000
@@ -76,7 +77,8 @@ app.prepare().then(() => {
         const parsedUrl = parse(req.url, true)
         const { pathname, query } = parsedUrl
         ip = requestIp.getClientIp(req)
-       
+        console.log({ headers:req.headers })
+
         if (pathname === '/') {
             console.log({ clientIpserver: ip })
             app.render({ ...req, clientIp: ip }, res, '/', query)
@@ -85,9 +87,9 @@ app.prepare().then(() => {
         } else {
             handle(req, res, parsedUrl)
         }
-    }).listen(3000, (err) => {
+    }).listen(3000,hostname, (err) => {
         if (err) throw err
-        console.log('> Ready on http://localhost:3000')
+        console.log('> Ready on http://localhost:3000', {hostname})
     })
     // const server = express()
 
@@ -152,7 +154,7 @@ app.prepare().then(() => {
 //         const parsedUrl = parse(req.url, true)
 //         const { pathname, query } = parsedUrl
 //         ip = requestIp.getClientIp(req)
-       
+
 //         if (pathname === '/') {
 //             console.log({ clientIpserver: ip })
 //             app.render({ ...req, clientIp: ip }, res, '/', query)
