@@ -3,21 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-   "dev": "node server.js",
+    "dev": "node server.js",
     "build": "next build",
     "start": "cross-env NODE_ENV=production node server.js",
     "export": "next build && next export"
-
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "cacheable-response": "^2.1.9",
     "country-state-city": "^2.0.0",
     "express": "^4.17.1",
+    "feature-policy": "^0.6.0",
+    "helmet": "^4.4.1",
     "islamic-prayer-times": "^1.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "next": "10.0.8",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "request-ip": "^2.1.3"
   }
 }

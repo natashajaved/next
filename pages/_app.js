@@ -9,10 +9,12 @@ function MyApp({ Component, pageProps }) {
   return <Component {...pageProps} />
 }
 
-MyApp.getInitialProps = async ({ ctx: context, }) => {
-  console.log({ context })
+MyApp.getInitialProps = async ({Component, ctx: context, }) => {
+  console.log({ context :context.req.headers})
 
-
+  if (Component.getInitialProps) {
+    pageProps = await Component.getInitialProps(ctx);
+  }
   const isServer = !!context.req
   const clientIP = context.req && context.req.clientIp ? context.req.clientIp !== '::1' ? context.req.clientIp : '127.0.0.1' : '127.0.0.1'
   console.log({
@@ -62,7 +64,6 @@ MyApp.getInitialProps = async ({ ctx: context, }) => {
       prayers: res.data,
       gmt: res.data.TimeZone.GmtOffset,
       loc: loc.data,
-      context,
       actualip:context.req.clientIp,
       clientIP: clientIP ? clientIP : 'none found',
       allc,
