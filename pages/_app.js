@@ -9,9 +9,9 @@ function MyApp({ Component, pageProps }) {
   return <Component {...pageProps} />
 }
 
-MyApp.getInitialProps = async ({Component, ctx: context, }) => {
-  console.log({ context :context.req.headers})
-
+MyApp.getInitialProps = async ({ Component, ctx: context, }) => {
+  console.log({ context: context.req.headers })
+  let pageProps
   if (Component.getInitialProps) {
     pageProps = await Component.getInitialProps(context);
   }
@@ -59,12 +59,12 @@ MyApp.getInitialProps = async ({Component, ctx: context, }) => {
   let cities = await axiousIns.get('https://countriesnow.space/api/v0.1/countries')
   return {
     pageProps: {
-
+      ...pageProps,
       cities: cities.data,
       prayers: res.data,
       gmt: res.data.TimeZone.GmtOffset,
       loc: loc.data,
-      actualip:context.req.clientIp,
+      actualip: context.req.clientIp,
       clientIP: clientIP ? clientIP : 'none found',
       allc,
       stars: PrayTimes().getTimes(
