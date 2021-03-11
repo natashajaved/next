@@ -13,7 +13,7 @@ MyApp.getInitialProps = async ({Component, ctx: context, }) => {
   console.log({ context :context.req.headers})
 
   if (Component.getInitialProps) {
-    pageProps = await Component.getInitialProps(ctx);
+    pageProps = await Component.getInitialProps(context);
   }
   const isServer = !!context.req
   const clientIP = context.req && context.req.clientIp ? context.req.clientIp !== '::1' ? context.req.clientIp : '127.0.0.1' : '127.0.0.1'
