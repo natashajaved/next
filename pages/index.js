@@ -36,6 +36,7 @@ const index = (props) => {
         </p>
 
         <p>{props.clientIP}</p>
+        <p>{props.actualip ? props.actualip :'no ip found'}</p>
         <div className={styles.grid}>
           <a href="https://nextjs.org/docs" className={styles.card}>
             <h3>Documentation &rarr;</h3>

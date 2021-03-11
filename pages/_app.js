@@ -4,22 +4,27 @@ import { PrayTimes } from 'islamic-prayer-times'
 import moment from 'moment'
 import '../styles/globals.css'
 
+ 
+
 function MyApp({ Component, pageProps }) {
+  
   console.log({ pageProps })
-  return <Component {...pageProps} />
+  return <Component {...pageProps}/>
 }
 
 MyApp.getInitialProps = async ({ Component, ctx: context, }) => {
-  console.log({ context: context.req.headers })
+  console.log({ Component })
   let pageProps
   if (Component.getInitialProps) {
     pageProps = await Component.getInitialProps(context);
   }
+
   const isServer = !!context.req
   const clientIP = context.req && context.req.clientIp ? context.req.clientIp !== '::1' ? context.req.clientIp : '127.0.0.1' : '127.0.0.1'
   console.log({
     isServer,
     actualip: context.req.clientIp,
+    xforwarded:context.req.headers['x-forwarded-for'],
     clientIP,
     c: context.req,
     d: 'as'
