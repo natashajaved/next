@@ -4,12 +4,12 @@ import { PrayTimes } from 'islamic-prayer-times'
 import moment from 'moment'
 import '../styles/globals.css'
 
- 
+
 
 function MyApp({ Component, pageProps }) {
-  
+
   console.log({ pageProps })
-  return <Component {...pageProps}/>
+  return <Component {...pageProps} />
 }
 
 MyApp.getInitialProps = async ({ Component, ctx: context, }) => {
@@ -19,12 +19,20 @@ MyApp.getInitialProps = async ({ Component, ctx: context, }) => {
     pageProps = await Component.getInitialProps(context);
   }
 
+  let ipRes = await axios.get('https://www.cloudflare.com/cdn-cgi/trace')
+  const regex = /ip=[\d.]+/g
+
+  console.log({ ipRes: ipRes.data.match(regex) })
+  const ip = ipRes.data.match(regex)
   const isServer = !!context.req
-  const clientIP = context.req && context.req.clientIp ? context.req.clientIp !== '::1' ? context.req.clientIp : '127.0.0.1' : '127.0.0.1'
+
+
+  const clientIP = ip[0] ? ip[0].replace(/[ip=]/g, '') : '127.0.0.1'
+  // context.req && context.req.clientIp ? context.req.clientIp !== '::1' ? context.req.clientIp : '127.0.0.1' : '127.0.0.1'
   console.log({
     isServer,
     actualip: context.req.clientIp,
-    xforwarded:context.req.headers['x-forwarded-for'],
+    xforwarded: context.req.headers['x-forwarded-for'],
     clientIP,
     c: context.req,
     d: 'as'
@@ -69,7 +77,7 @@ MyApp.getInitialProps = async ({ Component, ctx: context, }) => {
       prayers: res.data,
       gmt: res.data.TimeZone.GmtOffset,
       loc: loc.data,
-      headers:context.req.headers,
+      headers: context.req.headers,
       actualip: context.req.clientIp,
       clientIP: clientIP ? clientIP : 'none found',
       allc,
