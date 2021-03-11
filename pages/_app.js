@@ -79,7 +79,7 @@ MyApp.getInitialProps = async ({ Component, ctx: context, }) => {
       loc: loc.data,
       headers: context.req.headers,
       actualip: context.req.clientIp,
-      clientIP: clientIP ? clientIP : 'none found',
+     /// clientIP: clientIP ? clientIP : 'none found',
       allc,
       stars: PrayTimes().getTimes(
         moment().toDate(),

@@ -36,7 +36,7 @@ const index = (props) => {
         </p>
 
         <p>{props.clientIP}</p>
-        <p>{props.actualip ? props.actualip :'no ip found'}</p>
+        <p>{props.actualip ? props.actualip : 'no ip found'}</p>
         <div className={styles.grid}>
           <a href="https://nextjs.org/docs" className={styles.card}>
             <h3>Documentation &rarr;</h3>
@@ -82,7 +82,20 @@ const index = (props) => {
   )
 }
 index.getLayout = (page) => { return <div>{page}</div> };
+export async function getStaticProps() {
 
+
+  let ipRes = await axios.get('https://www.cloudflare.com/cdn-cgi/trace')
+  const regex = /ip=[\d.]+/g
+
+  console.log({ ipRes: ipRes.data.match(regex) })
+  const ip = ipRes.data.match(regex)
+
+
+  const clientIP = ip[0] ? ip[0].replace(/[ip=]/g, '') : 'not found'
+
+  return { props:{clientIP} }
+}
 
 
 
