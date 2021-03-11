@@ -9,7 +9,7 @@ function MyApp({ Component, pageProps }) {
   return <Component {...pageProps} />
 }
 
-MyApp.getInitialProps = async ({ ctx: context }) => {
+MyApp.getInitialProps = async ({ ctx: context, }) => {
   console.log({ context })
 
 
@@ -62,6 +62,7 @@ MyApp.getInitialProps = async ({ ctx: context }) => {
       prayers: res.data,
       gmt: res.data.TimeZone.GmtOffset,
       loc: loc.data,
+      context,
       actualip:context.req.clientIp,
       clientIP: clientIP ? clientIP : 'none found',
       allc,

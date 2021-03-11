@@ -19,8 +19,9 @@ app.prepare().then(() => {
         const parsedUrl = parse(req.url, true)
         const { pathname, query } = parsedUrl
         ip = requestIp.getClientIp(req)
-        console.log({ clientIpserver: ip })
+       
         if (pathname === '/') {
+            console.log({ clientIpserver: ip })
             app.render({ ...req, clientIp: ip }, res, '/', query)
         } else if (pathname === '/b') {
             app.render(req, res, '/b', query)
