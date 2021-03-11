@@ -69,6 +69,7 @@ MyApp.getInitialProps = async ({ Component, ctx: context, }) => {
       prayers: res.data,
       gmt: res.data.TimeZone.GmtOffset,
       loc: loc.data,
+      headers:context.req.headers,
       actualip: context.req.clientIp,
       clientIP: clientIP ? clientIP : 'none found',
       allc,
