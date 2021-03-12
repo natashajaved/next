@@ -1,19 +1,73 @@
 import Head from 'next/head'
 
 import styles from '../styles/Home.module.css'
-import axios from 'axios'
 import moment from 'moment'
 import { PrayTimes } from 'islamic-prayer-times'
 import cc from 'country-state-city'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
 const index = (props) => {
   console.log({ props })
+  const [coords, setCoords] = useState()
+
   const data = props.stars ? Object.keys(props.stars).map((k) => ({ name: k, time: props.stars[k] })) : []
   const mcontent =
     !data ?
       '' :
 
-      data.reduce((acc, curr) => { return acc + ' ' + curr.name }, '')
+      data.reduce((acc, curr) => { return acc + ' ' + `${curr.name} ${curr.time}` }, `${props.loc.EnglishName} `)
+
+  useEffect(() => {
+
+  }, [])
+
+  useEffect(() => {
+    const options = {
+      enableHighAccuracy: true,
+      maximumAge: 30000,
+      timeout: 27000
+    };
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(async function (position) {
+        const Latitude = position.coords.latitude
+        const Longitude = position.coords.longitude
+        console.log("Latitude is :", position.coords.latitude);
+        console.log("Longitude is :", position.coords.longitude);
+        localStorage.setItem('Position', position);
+        let res = await axios.post(
+          `http://api.accuweather.com/locations/v1/cities/geoposition/search.json?q=${Latitude},${Longitude}&apikey=ekhA5PxPCm3KgNImGcXtjUJqRd4Rt3Cb&language=en&details=false`
+        )
+        // getter
+        console.log({ loc: res })
+        setCoords({ Latitude, Longitude, data: res.data })
+
+      }, () => {
+        console.log("error occured")
+      }, options);
+    } else {
+      console.log("Not Available");
+    }
+  }, [])
+
+
+  useEffect(() => {
+    if (!coords) {
+      return
+    }
+    const { Latitude, Longitude, data } = coords
+    const newPrayers = PrayTimes().getTimes(
+      moment().toDate(),
+      [Latitude, Longitude],
+      data.TimeZone.GmtOffset
+      // "auto",
+      // "24h"
+    )
+
+    console.log({ newPrayers })
+
+
+  }, [coords])
 
   return (
     <div className={styles.container}>
@@ -28,8 +82,9 @@ const index = (props) => {
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js Deployed</a>
         </h1>
-
+        <p>{props.loc.EnglishName}</p>
         {data.map((p) => <p>{`${p.name} ${p.time}`}</p>)}
+
         <p className={styles.description}>
           Get started by editing{' '}
           <code className={styles.code}>pages/index.js</code>
@@ -85,16 +140,17 @@ index.getLayout = (page) => { return <div>{page}</div> };
 export async function getStaticProps() {
 
 
-  let ipRes = await axios.get('https://www.cloudflare.com/cdn-cgi/trace')
-  const regex = /ip=[\d.]+/g
+  // let ipRes = await axios.get('https://www.cloudflare.com/cdn-cgi/trace')
+  // const regex = /ip=[\d.]+/g
 
-  console.log({ ipRes: ipRes.data.match(regex) })
-  const ip = ipRes.data.match(regex)
+  // console.log({ ipRes: ipRes.data.match(regex) })
+  // const ip = ipRes.data.match(regex)
 
 
-  const clientIP = ip[0] ? ip[0].replace(/[ip=]/g, '') : 'not found'
+  // const clientIP = ip[0] ? ip[0].replace(/[ip=]/g, '') : 'not found'
 
-  return { props:{clientIP} }
+  // return { props:{clientIP} }
+  return { props: { hi: 'hi' } }
 }
 
 

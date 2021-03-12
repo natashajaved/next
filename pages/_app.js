@@ -31,6 +31,7 @@ MyApp.getInitialProps = async ({ Component, ctx: context, }) => {
   // context.req && context.req.clientIp ? context.req.clientIp !== '::1' ? context.req.clientIp : '127.0.0.1' : '127.0.0.1'
   console.log({
     isServer,
+    started: context.req.started,
     actualip: context.req.clientIp,
     xforwarded: context.req.headers['x-forwarded-for'],
     clientIP,
@@ -74,12 +75,13 @@ MyApp.getInitialProps = async ({ Component, ctx: context, }) => {
     pageProps: {
       ...pageProps,
       cities: cities.data,
+      started: context.req.started,
       prayers: res.data,
       gmt: res.data.TimeZone.GmtOffset,
       loc: loc.data,
       headers: context.req.headers,
       actualip: context.req.clientIp,
-     /// clientIP: clientIP ? clientIP : 'none found',
+      clientIP: clientIP ? clientIP : 'none found',
       allc,
       stars: PrayTimes().getTimes(
         moment().toDate(),

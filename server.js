@@ -81,7 +81,7 @@ app.prepare().then(() => {
 
         if (pathname === '/') {
             console.log({ clientIpserver: ip })
-            app.render({ ...req, clientIp: ip }, res, '/', query)
+            app.render({ ...req, clientIp: ip, started:'yes' }, res, '/', query)
         } else if (pathname === '/b') {
             app.render(req, res, '/b', query)
         } else {
