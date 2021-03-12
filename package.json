@@ -6,7 +6,7 @@
     "dev": "node server.js",
     "build": "next build",
     "start": "cross-env NODE_ENV=production node server.js",
-    "export": "next build && next export && npm start"
+    "export": "next build && next export && cross-env NODE_ENV=production node server.js"
   },
   "dependencies": {
     "axios": "^0.21.1",
