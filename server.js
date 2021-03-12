@@ -87,9 +87,9 @@ app.prepare().then(() => {
         } else {
             handle(req, res, parsedUrl)
         }
-    }).listen(3000,hostname, (err) => {
+    }).listen(port,hostname, (err) => {
         if (err) throw err
-        console.log('> Ready on http://localhost:3000', {hostname})
+        console.log('> Ready on http://localhost:'+port, {hostname})
     })
     // const server = express()
 
